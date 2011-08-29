@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'bundler_fastupdate'
+
+gem 'bundler', version
+load Gem.bin_path('bundler', 'bundle', version)
