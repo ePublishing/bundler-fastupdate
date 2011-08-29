@@ -18,9 +18,7 @@ Workaround 1:
 The first workaround to this solution is to just bypass
 bundler for these scenarios:
 
-<pre>
-sudo gem install some_gem && bundle
-</pre>
+<code>sudo gem install some_gem && bundle</code>
 
 However, this has two problems:  1) It will always install
 the new gem even if the latest version is already installed
@@ -36,14 +34,10 @@ Workaround #2:
 Bundler + bundler-fastupdate: With this in place, updates
 will:
 
-* grab the first latest spec it finds from sources (rather than
-consult all sources) -- helpful if your gem is located in a
-private server as it avoids hits to rubygems server
-* verifies dependencies match and are met (otherwise defaults
-to normal <code>update</code>
-* installs the latest version of the requested gem (if not
-already installed)
-* re-locks Gemfile.lock with latest version
+* grab the first latest spec it finds from sources (rather than consult all sources) -- helpful if your gem is located in a private server as it avoids hits to rubygems server
+* verifies dependencies match and are met (otherwise defaults to normal <code>update</code>
+* installs the latest version of the requested gem (if not already installed)
+* updates Gemfile.lock with latest version
 
 === Installation
 
@@ -65,17 +59,13 @@ use this as a replacement for <code>bundle</code>, but
 the intended use is to create an alias so that its use
 becomes transparent:
 
-<pre>
-alias bundle="bundle-fastupdate"
-</pre>
+<code>alias bundle="bundle-fastupdate"</code>
 
 Since <code>bundle-fastupdate</code> is an extension of
 <code>bundle</code>, it does everything <code>bundle</code>
 does plus one additional new method:
 
-<pre>
-bundle fastupdate some_gem
-</pre>
+<code>bundle fastupdate some_gem</code>
 
 == Does it work?
 
