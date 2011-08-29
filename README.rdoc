@@ -1,0 +1,95 @@
+= Bundler-Fastupdate - A faster way to update gems with bundler
+
+== Introduction
+
+Bundler is slow.  It's not entirely bundler's fault, but
+there are some assumptions in its design that can cause
+some serious slowness (which can't be blamed on rubygems).
+It all boils down to the design decision for bundler to
+recursively manage all dependencies.  (That is, after all,
+what it is supposed to do.)  But in some cases all you want
+to do is upgrade a given gem without upgrading all of its
+dependencies ad infinitum.  If that gem happens to have a
+lot of dependencies, you can find yourself watching your
+screen do needless work for minutes.
+
+Workaround 1:
+
+The first workaround to this solution is to just bypass
+bundler for these scenarios:
+
+<pre>
+sudo gem install some_gem && bundle
+</pre>
+
+However, this has two problems:  1) It will always install
+the new gem even if the latest version is already installed
+2) There is no safety net in place to ensure that the
+latest version of the gem has dependencies which don't match
+what was previously installed or is otherwise not met in the
+current system.  In either of these cases, you'll need to
+do the good old fashion <code>bundle update some_gem</code>
+and let Bundler do its magic.
+
+Workaround #2:
+
+Bundler + bundler-fastupdate: With this in place, updates
+will:
+
+* grab the first latest spec it finds from sources (rather than
+consult all sources) -- helpful if your gem is located in a
+private server as it avoids hits to rubygems server
+* verifies dependencies match and are met (otherwise defaults
+to normal <code>update</code>
+* installs the latest version of the requested gem (if not
+already installed)
+* re-locks Gemfile.lock with latest version
+
+=== Installation
+
+  gem install bundler-fastupdate
+
+=== Git Repository
+
+http://github.com/ePublishing/bundler-fastupdate
+
+== Prerequisites
+
+This depends on bundler, of course.
+
+== Usage
+
+To avoid getting in the way, this installs a bin called
+<code>bundle-fastupdate</code>.  You can, of course,
+use this as a replacement for <code>bundle</code>, but
+the intended use is to create an alias so that its use
+becomes transparent:
+
+<pre>
+alias bundle="bundle-fastupdate"
+</pre>
+
+Since <code>bundle-fastupdate</code> is an extension of
+<code>bundle</code>, it does everything <code>bundle</code>
+does plus one additional new method:
+
+<pre>
+bundle fastupdate some_gem
+</pre>
+
+== Does it work?
+
+For us it sure did.  We have a Rails::Engine gem with LOTS
+of dependencies.  Updating sites with new versions of that gem
+would take approximately 83.2 seconds.  Worse yet, even if the
+latest version of the gem was already installed, it still took
+bundler 63.6 seconds just to update Gemfile.lock.
+
+With fastupdate, however, those times dropped to 6.7s and 1.2s
+respetively.  That's an insanely good improvement, if I do say
+so!
+
+---
+Author::   David McCullars <mailto:dmccullars@ePublishing.com>
+Copyright:: (C) 2011 ePublishing
+Licence::  GPL[http://www.gnu.org/copyleft/gpl.html]
